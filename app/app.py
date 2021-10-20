@@ -5,7 +5,8 @@ import requests
 import pandas as pd
 import config
 
-# TODO Recieve Logging (Python Logger)
+# TODO Logging (Python Logger) to Heroku, Observe logs
+# TODO How to roll back Heroku
 # TODO Assert Gunicorn Config
 # TODO Complete Local Migration, Assert what Alembic can changes
 # TODO Deploy to Heroku
