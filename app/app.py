@@ -1,9 +1,19 @@
 from sqlalchemy import (create_engine, MetaData, Table, Column, String, select,
                         Numeric)
 
+from flask import Flask
 import requests
 import pandas as pd
 import config
+import logging
+
+app = Flask(__name__)
+gunicorn_logger = logging.getLogger('gunicorn.error')
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_error_logger.handlers)
+app.logger.setLevel(logging.DEBUG)
+
+app.logger.debug("hello!")
 
 # TODO Logging (Python Logger) to Heroku, Observe logs
 # TODO How to roll back Heroku
@@ -94,11 +104,15 @@ class Db():
             count += 1
         print("# Transactions:", count)
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+#app.logger.debug("Hello again!")
+def main():
+    app.logger.debug("Hello again!")
     ts = extract()
-    print(ts)
+    app.logger.debug(ts)
     db = Db("DRDR", db_url)
     db.connect()
     db.create_table()
     db.add_migration(ts)
 
+main()
