@@ -29,7 +29,7 @@ app.logger.debug("hello!")
 
 TICKER = "DRDR"
 
-db_url = config.ProductionConfig.DATABASE_URI
+db_url = config.ProductionConfig.PROD_URI
 
 # Extract (API)
 def extract():
