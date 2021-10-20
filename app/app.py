@@ -94,7 +94,7 @@ class Db():
             count += 1
         print("# Transactions:", count)
 
-def main():
+if __name__ == "__main__":
     ts = extract()
     print(ts)
     db = Db("DRDR", db_url)
