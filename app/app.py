@@ -112,7 +112,7 @@ db.create_table()
 
 def main():
     while True:
-        time.sleep(10)
+        time.sleep(20)
         ts = extract()
         logging.info(ts)
         db.add_migration(ts)
