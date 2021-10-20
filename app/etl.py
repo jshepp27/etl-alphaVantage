@@ -1,16 +1,23 @@
-from sqlalchemy import (create_engine, MetaData, Table, Column, String, insert, select,
-                        Integer, Numeric, Boolean, insert, delete, text, and_)
+from sqlalchemy import (create_engine, MetaData, Table, Column, String, select,
+                        Numeric)
 
 import requests
 import pandas as pd
+import config
 
-# TODO Write as a Package
-# Config Passwords
-# TODO Schedule with AirFlow
+# TODO Config DB Settings, Secrets for different environments
+# Interchange Local Postgress
+# Complete Local Migration, Assert what Alembic can changes
 # TODO Deploy to Heroku
+# TODO Write as a Package
+# TODO Schedule with AirFlow
+# TODO Add a Front-end
+# TODO Recieve Logging (Python Logger)
+# TODO Understand Config in Package context
 
 TICKER = "DRDR"
-db_url = "postgresql://huylpljjnoshbe:b51e90b80991f8e32ed4399a04c6db2a837f803995392e79472d1b92110ac60b@ec2-34-250-16-127.eu-west-1.compute.amazonaws.com:5432/dc7g7o62up02ai"
+
+db_url = config.DevelopmentConfig.DATABASE_URI
 
 # Extract (API)
 def extract():
@@ -85,10 +92,13 @@ class Db():
             count += 1
         print("# Transactions:", count)
 
-if __name__ == "__main__":
+def main():
     ts = extract()
     print(ts)
     db = Db("DRDR", db_url)
     db.connect()
     db.create_table()
     db.add_migration(ts)
+
+if __name__ == "__main__":
+    main()
