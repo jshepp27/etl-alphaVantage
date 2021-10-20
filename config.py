@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 #     DATABASE_URI = os.environ['DATABASE_URI']
 
 class ProductionConfig():
-    PROD_URI = "postgres://huylpljjnoshbe:b51e90b80991f8e32ed4399a04c6db2a837f803995392e79472d1b92110ac60b@ec2-34-250-16-127.eu-west-1.compute.amazonaws.com:5432/dc7g7o62up02ai"
+    PROD_URI = "postgresql://huylpljjnoshbe:b51e90b80991f8e32ed4399a04c6db2a837f803995392e79472d1b92110ac60b@ec2-34-250-16-127.eu-west-1.compute.amazonaws.com:5432/dc7g7o62up02ai"
 
 # class StagingConfig(Config):
 #     DEBUG = True
