@@ -5,19 +5,20 @@ import requests
 import pandas as pd
 import config
 
-# TODO Config DB Settings, Secrets for different environments
-# Interchange Local Postgress
-# Complete Local Migration, Assert what Alembic can changes
+# TODO Recieve Logging (Python Logger)
+# TODO Assert Gunicorn Config
+# TODO Complete Local Migration, Assert what Alembic can changes
 # TODO Deploy to Heroku
 # TODO Write as a Package
 # TODO Schedule with AirFlow
 # TODO Add a Front-end
-# TODO Recieve Logging (Python Logger)
 # TODO Understand Config in Package context
+# Implement Observability
+
 
 TICKER = "DRDR"
 
-db_url = config.DevelopmentConfig.DATABASE_URI
+db_url = config.ProductionConfig.DATABASE_URI
 
 # Extract (API)
 def extract():
@@ -100,5 +101,3 @@ def main():
     db.create_table()
     db.add_migration(ts)
 
-if __name__ == "__main__":
-    main()
