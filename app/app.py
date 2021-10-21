@@ -27,6 +27,8 @@ app.logger.setLevel(logging.DEBUG)
 # Globals
 TICKER = "DRDR"
 DB_URL = config.ProductionConfig.PROD_URI
+logging.debug(f"DB_URL: {DB_URL}")
+
 TABLE_NAME = f"{TICKER}-tx-daily"
 API_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={TICKER}.LON&apikey=OMS1DTGJT1MEO1I9"
 
