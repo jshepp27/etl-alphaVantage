@@ -67,6 +67,9 @@ class Db():
 
     def __init__(self, tableName=TABLE_NAME, db_url=DB_URL):
         self.db_url = os.getenv("DATABASE_URL")
+        if self.db_url.startswith("postgres://"):
+            self.db_url = self.db_url.replace("postgres://", "postgresql://", 1)
+        gunicorn_logger.info(f"db_url:{self.db_url}")
         self.connection = ""
         self.tableName = tableName
         self.table = ""
