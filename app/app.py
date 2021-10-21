@@ -6,41 +6,35 @@ import requests
 import pandas as pd
 import config
 import logging
-import threading
 import time
 
-# TODO Logging (Python Logger) to Heroku, Observe logs
-# TODO How to roll back Heroku
-# TODO Assert Gunicorn Config
-# TODO Complete Local Migration, Assert what Alembic can changes
-# TODO Deploy to Heroku
-# TODO Write as a Package
 # TODO Schedule with AirFlow
-# TODO Add a Front-end
-# TODO Understand Config in Package context
-# Implement Observability
+# TODO Observability
 
 app = Flask(__name__)
 
+# Send Logs to Gunicorn
 gunicorn_logger = logging.getLogger('gunicorn.error')
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers.extend(gunicorn_error_logger.handlers)
 app.logger.setLevel(logging.DEBUG)
 
-
+# Globals
 TICKER = "DRDR"
-
-db_url = config.ProductionConfig.PROD_URI
+DB_URL = config.ProductionConfig.PROD_URI
+TABLE_NAME = f"{TICKER}-tx-daily"
+API_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={TICKER}.LON&apikey=OMS1DTGJT1MEO1I9"
 
 # Extract (API)
-def extract():
-    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={TICKER}.LON&apikey=OMS1DTGJT1MEO1I9"
-
+def extract(url=API_URL):
     r = requests.get(url)
     data = r.json()
 
-    # Transform
-    ts_df = pd.DataFrame.from_dict(data["Time Series (Daily)"], orient="index")
+    return data
+
+# Transform
+def transform(ts):
+    ts_df = pd.DataFrame.from_dict(ts["Time Series (Daily)"], orient="index")
 
     ts_df.columns = ["Open", "High", "Low", "Close", "Volume"]
     ts_df.insert(0, "Ticker", TICKER)
@@ -59,12 +53,12 @@ def extract():
     return ts_df
 
 # Load
+# Init ORM
 metadata = MetaData()
-_tableName = f"{TICKER}-tx-daily"
 
 class Db():
 
-    def __init__(self, tableName, db_url):
+    def __init__(self, tableName=TABLE_NAME, db_url=DB_URL):
         self.db_url = db_url
         self.connection = ""
         self.tableName = tableName
@@ -104,16 +98,18 @@ class Db():
             count += 1
         print("# Transactions:", count)
 
-db = Db("DRDR", db_url)
+# Init Db
+db = Db("DRDR", DB_URL)
 db.connect()
 db.create_table()
-#app.logger.info("\n Db created ...")
 
 def main():
     while True:
         time.sleep(15)
         ts = extract()
+        ts = transform(ts)
         logging.info(ts)
         db.add_migration(ts)
 
+# Gunicorn Entry Object
 main()
