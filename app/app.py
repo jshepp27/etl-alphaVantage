@@ -1,12 +1,17 @@
+import os
+
 from sqlalchemy import (create_engine, MetaData, Table, Column, String, select,
                         Numeric)
 
+import sys
 from flask import Flask
 import requests
 import pandas as pd
-import config
 import logging
 import time
+
+sys.path.append('./')
+import config
 
 # TODO Schedule with AirFlow
 # TODO Observability
@@ -59,7 +64,7 @@ metadata = MetaData()
 class Db():
 
     def __init__(self, tableName=TABLE_NAME, db_url=DB_URL):
-        self.db_url = db_url
+        self.db_url = os.getenv("DATABASE_URI")
         self.connection = ""
         self.tableName = tableName
         self.table = ""
