@@ -39,6 +39,7 @@ def extract():
     r = requests.get(url)
     data = r.json()
 
+    # Transform
     ts_df = pd.DataFrame.from_dict(data["Time Series (Daily)"], orient="index")
 
     ts_df.columns = ["Open", "High", "Low", "Close", "Volume"]
@@ -56,8 +57,6 @@ def extract():
     ts_df["Date"] = ts_df["Date"].astype(str)
 
     return ts_df
-
-# Transform
 
 # Load
 metadata = MetaData()
@@ -112,7 +111,7 @@ db.create_table()
 
 def main():
     while True:
-        time.sleep(20)
+        time.sleep(15)
         ts = extract()
         logging.info(ts)
         db.add_migration(ts)
