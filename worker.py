@@ -38,12 +38,7 @@ def main():
     loader = PostgresqlTickerLoader(db_url)
     runner = TickerETLRunner(ticker, extractor, transformer, loader)
 
-    run = 1
-    while True:
-        runner.run()
-        time.sleep(15)
-        print(f"Run number: {run}")
-        run = run + 1
+    runner.run()
 
 
 if __name__ == "__main__":

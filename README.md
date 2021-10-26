@@ -143,3 +143,18 @@ more complex for very little gain.
 
 Having done all that I've added a `setup_config` function in `worker.py` 
 which just defines the config parameters which the worker needs.
+
+### Moving to a scheduler
+
+As we discussed, that pesky little `time.sleep(15)` in your code is going 
+to make the app very cost inefficient. We can switch to using a heroku 
+schedule which will mean that the dyno will only exist whilst it is running. 
+To do this you need to install the heroku schedule addon with the command ` heroku addons:docs scheduler
+`. If you've not verified your account by adding a card then it won't let 
+you install this (note that it doesn't actually cost any money!).
+
+To make it work I've refactored the worker so it runs once. Unfortunately 
+there's no way to configure the schedule addon from the repo so you'll need 
+to run `heroku addons:open scheduler` and configure the app to run `python 
+worker.py` at whatever interval your require. You can force the worker to 
+run for testing purposes by running `heroku run python worker.py -a <app-name>`.
