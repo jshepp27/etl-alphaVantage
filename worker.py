@@ -1,25 +1,42 @@
-import os
 import logging
 import time
 
+from config import Config, ConfigItem, ConfigurationError
 from ticker_fetcher import AlphavantageTickerExtractor, PostgresqlTickerLoader, AlphavantageTickerTransformer
 from ticker_fetcher.ticker_etl_runner import TickerETLRunner
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-# TODO Schedule with AirFlow
-# TODO Observability
+
+def setup_config():
+    config = Config(
+        ConfigItem("ticker", "TICKER", "ticker", "DRDR"),
+        ConfigItem("db_url", "DATABASE_URL", "db_url"),
+        ConfigItem("api_key", "ALPHAVANTAGE_API_KEY", "api_key")
+    )
+    try:
+        config.load_config()
+    except ConfigurationError as e:
+        # We don't mind if the config doesn't load as there's no config.json on heroku
+        # We will log it though, so that we know what happened.
+        logger.exception(e)
+        pass
+
+    return config
 
 
 def main():
-    print("Starting the amazing ticker app of awesomes.")
-    TICKER = "DRDR"
-    db_url = os.environ.get("DATABASE_URL")
+    config = setup_config()
+    ticker = config["ticker"]
+    db_url = config["db_url"]
+    api_key = config["api_key"]
 
     # this is called dependency injection
-    extractor = AlphavantageTickerExtractor()
+    extractor = AlphavantageTickerExtractor(api_key=api_key)
     transformer = AlphavantageTickerTransformer()
     loader = PostgresqlTickerLoader(db_url)
-    runner = TickerETLRunner(TICKER, extractor, transformer, loader)
+    runner = TickerETLRunner(ticker, extractor, transformer, loader)
 
     run = 1
     while True:
