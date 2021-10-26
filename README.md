@@ -158,3 +158,17 @@ there's no way to configure the schedule addon from the repo so you'll need
 to run `heroku addons:open scheduler` and configure the app to run `python 
 worker.py` at whatever interval your require. You can force the worker to 
 run for testing purposes by running `heroku run python worker.py -a <app-name>`.
+
+### The UI
+
+So now comes the fun bit. First thing is to write a small class which can 
+grab our Tick data. I've called it `TickerGetter` for want of a better word.
+
+A major advantage of our `config.py` approach from above is that we can load 
+the same config as we loaded for the worker. We don't need the alphavantage 
+API key, but we do need the database URL and the symbol name. We can't just 
+set this up in `main()` like we did for the worker, as `main()` isn't run by 
+gunicorn, instead we need to use the `before_first_request` hook. Flask has 
+its own configuration framework, so we load from our into that using the 
+last couple of lines of that method.
+

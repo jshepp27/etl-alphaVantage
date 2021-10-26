@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+        </tr>
+    {% for tick in ticks %}
+        <tr>
+            <td>{{tick.date}}</td>
+            <td>{{tick.open / 10000}}</td>
+            <td>{{tick.high / 10000}}</td>
+            <td>{{tick.low / 10000}}</td>
+            <td>{{tick.close / 10000}}</td>
+            <td>{{tick.volume}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
