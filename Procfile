@@ -1,1 +1,1 @@
-web: gunicorn --worker-class=gevent app.app:main
+web: gunicorn app.app:app
